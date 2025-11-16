@@ -1,176 +1,228 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#d4af37"/>
-<title>Sublimation Calc</title>
-<style>
-body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial;margin:0;background:#0b0b0c;color:#fff}
-.header{background:linear-gradient(90deg,#111,#222);padding:18px 16px;display:flex;align-items:center;gap:12px}
-.logo{width:48px;height:48px;border-radius:8px;background:#d4af37;display:flex;align-items:center;justify-content:center;color:#111;font-weight:700}
-.container{padding:18px}
-.card{background:#111;border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:0 6px 18px rgba(0,0,0,0.6)}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.input{flex:1;min-width:120px}
-label{font-size:12px;color:#ccc}
-input,select{width:100%;padding:8px;border-radius:8px;border:1px solid #222;background:#070707;color:#fff}
-.result{font-size:22px;font-weight:700;margin-top:8px}
-.note{font-size:12px;color:#aaa;margin-top:6px}
-.small{font-size:13px;color:#ddd}
-.footer{padding:12px;text-align:center;color:#999;font-size:12px}
-.btn{background:#d4af37;color:#111;padding:10px 14px;border-radius:10px;border:none;font-weight:700}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ZT.ART — калькулятор сублимации</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="/sublimation-calc/manifest.json" />
+  <meta name="theme-color" content="#000000"/>
+
+  <style>
+    :root{
+      --bg:#0b0b0b;
+      --card:#0f0f10;
+      --gold:#d4a71a;
+      --muted:#bfbfbf;
+      --accent:#222;
+      --radius:12px;
+      font-family: Inter, Roboto, Arial, sans-serif;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#050505,#0b0b0b);color:#fff}
+    .container{max-width:920px;margin:18px auto;padding:16px}
+    header{display:flex;gap:12px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:12px;background:#111;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.6)}
+    .logo img{width:44px;height:44px;object-fit:contain}
+    h1{font-size:18px;margin:0 0 0 4px;letter-spacing:0.6px}
+    p.lead{margin:6px 0 12px;color:var(--muted);font-size:13px}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);padding:14px;box-shadow:0 6px 20px rgba(0,0,0,.6);margin-bottom:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    input[type=number], select{background:transparent;border:1px solid #222;padding:10px;border-radius:8px;color:#fff;min-width:120px}
+    input[type=number]::placeholder{color:#7a7a7a}
+    .btn{background:linear-gradient(90deg,var(--gold), #e6be4a);border:none;padding:10px 14px;border-radius:10px;color:#070707;font-weight:700;cursor:pointer}
+    .btn.secondary{background:transparent;border:1px solid #222;color:var(--muted)}
+    .result{font-size:22px;font-weight:800;color:var(--gold);}
+
+    .small{font-size:12px;color:var(--muted)}
+    footer{margin-top:18px;color:var(--muted);font-size:12px;display:flex;justify-content:space-between;align-items:center}
+
+    /* Install button */
+    #installBtn{display:inline-flex;align-items:center;gap:8px;background:#111;border:1px solid #222;padding:8px 10px;border-radius:10px;color:var(--gold);cursor:pointer}
+    #installBtn.hidden{display:none}
+
+    /* responsive */
+    @media(max-width:560px){
+      .row{flex-direction:column}
+      .logo{width:48px;height:48px}
+    }
+  </style>
 </head>
 <body>
-<header class="header">
-  <div class="logo">ZH</div>
-  <div>
-    <div style="font-weight:700">Sublimation Calc</div>
-    <div style="font-size:12px;color:#ccc">Быстро вычислить цену по размерам</div>
-  </div>
-</header>
-<main class="container">
-  <div class="card">
-    <div class="row">
-      <div class="input">
-        <label>Режим</label>
-        <select id="mode">
-          <option value="single">Одинарная панель</option>
-          <option value="modular">Модульная (несколько панелей)</option>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <img src="icon.png" alt="ZT.ART">
+      </div>
+      <div>
+        <h1>ZT.ART — калькулятор сублимации</h1>
+        <p class="lead">Быстрый расчёт цены на печать на алюминиевый хромолюкс. Установи как приложение.</p>
+      </div>
+      <div style="margin-left:auto">
+        <button id="installBtn" class="">Установить</button>
+      </div>
+    </header>
+
+    <div class="card">
+      <label>Формат / материал</label>
+      <div class="row">
+        <select id="format">
+          <option value="A4">A4 (210 × 297 мм)</option>
+          <option value="A3">A3 (297 × 420 мм)</option>
+          <option value="30x40">30 × 40 см</option>
+          <option value="40x60">40 × 60 см</option>
+          <option value="custom">Пользовательский (мм)</option>
         </select>
+
+        <input id="w" type="number" placeholder="Ширина (мм)" min="1" />
+        <input id="h" type="number" placeholder="Высота (мм)" min="1" />
+        <input id="panels" type="number" placeholder="Число панелей (1)" min="1" value="1"/>
       </div>
-      <div class="input">
-        <label>Ширина (см)</label>
-        <input type="number" id="width" value="30" min="1">
+      <p class="small">Если выбираешь стандартный формат — поля автоматически заполнятся.</p>
+    </div>
+
+    <div class="card">
+      <label>Настройки цены</label>
+      <div class="row">
+        <input id="rate" type="number" value="70" placeholder="Базовая ставка (тг/см²)" />
+        <input id="minPrice" type="number" value="10000" placeholder="Минимальная цена (тг)" />
+        <select id="finish">
+          <option value="matte">Матовый</option>
+          <option value="gloss">Глянец (+20%)</option>
+          <option value="gloss_wash">Глянец + мытьё (+30%)</option>
+        </select>
+        <button id="calc" class="btn">Рассчитать</button>
+        <button id="share" class="btn secondary">Копировать цену</button>
       </div>
-      <div class="input">
-        <label>Высота (см)</label>
-        <input type="number" id="height" value="40" min="1">
+
+      <div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div class="small">Итог / за изделие</div>
+          <div id="price" class="result">— тг</div>
+          <div id="note" class="small"></div>
+        </div>
+        <div style="text-align:right">
+          <div class="small">Детали</div>
+          <div id="details" class="small">—</div>
+        </div>
       </div>
     </div>
 
-    <div id="modarea" style="display:none;margin-top:10px" class="row">
-      <div class="input">
-        <label>Колонки</label>
-        <input type="number" id="cols" value="2" min="1">
-      </div>
-      <div class="input">
-        <label>Строки</label>
-        <input type="number" id="rows" value="2" min="1">
-      </div>
-    </div>
-
-    <div style="margin-top:10px" class="row">
-      <button id="calc" class="btn">Посчитать</button>
-      <button id="share" class="btn" style="background:#333;color:#fff">Скопировать цену</button>
-    </div>
-
-    <div id="out" class="card" style="margin-top:12px">
-      <div class="small">Результат</div>
-      <div id="price" class="result">— тг</div>
-      <div id="note" class="note"></div>
-      <div id="details" class="small"></div>
-    </div>
+    <footer>
+      <div>ZT.ART · <span class="small">Сублимация на алюминии</span></div>
+      <div class="small">© <span id="year"></span></div>
+    </footer>
   </div>
-
-  <div class="card small">
-    <div style="font-weight:700">Быстрая шпаргалка</div>
-    <div>До 25×25 — 10–15 тыс · 30×30 — 18 тыс · 30×40 — 20 тыс · 40×60 — 40 тыс</div>
-  </div>
-
-  <div class="card small">
-    <div style="font-weight:700">Инструкция установки</div>
-    <ol>
-      <li>Открой этот сайт в Chrome на Android.</li>
-      <li>В меню Chrome выбери «Добавить на главный экран» / Install.</li>
-      <li>Открой приложение с иконки — работает офлайн.</li>
-    </ol>
-  </div>
-
-</main>
-<footer class="footer">© Sublimation Calc — для бизнеса Жулдыз</footer>
 
 <script>
-const standard = [
-  {w:21,h:30,price:12000,label:"A4 21×30"},
-  {w:30,h:42,price:22000,label:"A3 30×42"},
-  {w:30,h:45,price:25000,label:"A3+ 30×45"},
-  {w:40,h:50,price:33000,label:"40×50"},
-  {w:40,h:60,price:40000,label:"40×60"},
-  {w:20,h:20,price:10000,label:"20×20"},
-  {w:25,h:25,price:14000,label:"25×25"},
-  {w:30,h:30,price:18000,label:"30×30"},
-  {w:35,h:35,price:22000,label:"35×35"},
-  {w:40,h:40,price:28000,label:"40×40"},
-  {w:50,h:50,price:38000,label:"50×50"},
-  {w:60,h:60,price:50000,label:"60×60"},
-  {w:20,h:30,price:11000,label:"20×30"},
-  {w:25,h:35,price:15000,label:"25×35"},
-  {w:30,h:40,price:20000,label:"30×40"},
-  {w:30,h:50,price:26000,label:"30×50"},
-  {w:30,h:60,price:32000,label:"30×60"},
-  {w:35,h:50,price:32000,label:"35×50"},
-  {w:35,h:60,price:38000,label:"35×60"},
-  {w:50,h:60,price:45000,label:"50×60"}
-];
+  // авто-заполнение стандартов
+  const formats = {
+    A4: {w:210,h:297},
+    A3: {w:297,h:420},
+    "30x40": {w:300,h:400},
+    "40x60": {w:400,h:600}
+  };
+  const el = id => document.getElementById(id);
+  el('year').innerText = new Date().getFullYear();
 
-function findStandard(w,h){
-  const tol = 1.2;
-  for(const s of standard){
-    if((Math.abs(s.w-w)<=tol && Math.abs(s.h-h)<=tol) || (Math.abs(s.w-h)<=tol && Math.abs(s.h-w)<=tol)){
-      return s;
+  const formatSel = el('format');
+  formatSel.addEventListener('change', ()=> {
+    const v = formatSel.value;
+    if(formats[v]){
+      el('w').value = formats[v].w;
+      el('h').value = formats[v].h;
+    } else {
+      el('w').value='';
+      el('h').value='';
     }
+  });
+
+  // расчет
+  function calculate(){
+    const w = Number(el('w').value) || 0;
+    const h = Number(el('h').value) || 0;
+    const panels = Math.max(1, Number(el('panels').value) || 1);
+    let rate = Number(el('rate').value) || 70; // тг за см^2 (условно)
+    const minPrice = Number(el('minPrice').value) || 10000;
+    const finish = el('finish').value;
+
+    // площадь в см^2
+    const area_cm2 = (w/10) * (h/10);
+    // база
+    let base = area_cm2 * rate;
+    // коррекция финиша
+    if(finish === 'gloss') base *= 1.2;
+    if(finish === 'gloss_wash') base *= 1.3;
+
+    // если модуль из нескольких панелей — умножаем
+    let totalPerItem = base;
+    if(panels>1){
+      // небольшая скидка при модульной сборке
+      totalPerItem = base * panels * 0.95;
+    }
+
+    if(totalPerItem < minPrice) totalPerItem = minPrice;
+    totalPerItem = Math.round(totalPerItem);
+
+    // округлить до сотни
+    const rounded = Math.round(totalPerItem / 100) * 100;
+
+    return {
+      total: rounded,
+      area: area_cm2,
+      panels
+    };
   }
-  return null;
-}
 
-function calcPanelPrice(w,h){
-  const std = findStandard(w,h);
-  if(std) return {price:std.price, note:"Стандартный формат: "+std.label};
-  const area = w*h;
-  const baseRate = 70;
-  let price = area * baseRate;
-  if(price < 10000) price = 10000;
-  price = Math.round(price * 1.2 / 1000) * 1000;
-  return {price, note:"Нестандартный размер — расчёт по площади ("+Math.round(area)+" см²)"};
-}
+  el('calc').addEventListener('click', ()=>{
+    const r = calculate();
+    el('price').innerText = r.total.toLocaleString('ru-RU') + ' тг';
+    el('note').innerText = `Площадь: ${Math.round(r.area)} см² · Модулей: ${r.panels}`;
+    el('details').innerText = `Базовая ставка: ${el('rate').value} тг/см² · Мин: ${el('minPrice').value} тг`;
+  });
 
-function calculate(){
-  const mode = document.getElementById("mode").value;
-  const w = parseFloat(document.getElementById("width").value) || 0;
-  const h = parseFloat(document.getElementById("height").value) || 0;
-  if(mode==="single"){
-    const res = calcPanelPrice(w,h);
-    return {panels:1, panelPrice:res.price, total:res.price, note:res.note, w,h};
-  } else {
-    const cols = Math.max(1,parseInt(document.getElementById("cols").value)||1);
-    const rows = Math.max(1,parseInt(document.getElementById("rows").value)||1);
-    const count = cols*rows;
-    const res = calcPanelPrice(w,h);
-    const total = Math.round(res.price * count * 1.2 / 1000) * 1000;
-    return {panels:count, panelPrice:res.price, total, note:"Модуль: "+count+" панелей, +20% на композицию", w,h};
+  el('share').addEventListener('click', ()=>{
+    const r = calculate();
+    const txt = `Цена: ${r.total} тг (панелей ${r.panels})`;
+    if(navigator.clipboard) navigator.clipboard.writeText(txt).then(()=> alert('Цена скопирована: ' + txt));
+    else alert(txt);
+  });
+
+  // PWA install prompt
+  let deferredPrompt;
+  const installBtn = el('installBtn');
+  installBtn.classList.add('hidden');
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.classList.remove('hidden');
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if(!deferredPrompt) {
+      // fallback: показать инструкцию
+      alert('Если установка не появилась, откройте меню браузера и выберите "Добавить на главный экран".');
+      return;
+    }
+    deferredPrompt.prompt();
+    const choice = await deferredPrompt.userChoice;
+    if(choice.outcome === 'accepted') {
+      console.log('User accepted the A2HS prompt');
+    } else {
+      console.log('User dismissed the A2HS prompt');
+    }
+    deferredPrompt = null;
+    installBtn.classList.add('hidden');
+  });
+
+  // Service worker registration
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sublimation-calc/sw.js').then(()=> {
+      console.log('sw registered');
+    }).catch(()=>{console.log('sw failed')});
   }
-}
-
-document.getElementById("mode").addEventListener("change", e=>{
-  document.getElementById("modarea").style.display = e.target.value==="modular" ? "flex" : "none";
-});
-
-document.getElementById("calc").addEventListener("click", ()=>{
-  const r = calculate();
-  document.getElementById("price").innerText = r.total.toLocaleString()+" тг";
-  document.getElementById("note").innerText = r.note;
-  document.getElementById("details").innerText = "Панель: "+r.w+"×"+r.h+" см — "+r.panelPrice.toLocaleString()+" тг · Кол-во панелей: "+r.panels;
-});
-
-document.getElementById("share").addEventListener("click", ()=>{
-  const r = calculate();
-  const txt = `Цена: ${r.total} тг · ${r.panels}×${r.w}×${r.h}см`;
-  navigator.clipboard && navigator.clipboard.writeText(txt);
-  alert("Цена скопирована: "+txt);
-});
 </script>
 </body>
 </html>
