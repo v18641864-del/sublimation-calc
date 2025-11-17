@@ -1,15 +1,22 @@
 {
-  "name": "ZT.ART — Калькулятор",
   "short_name": "ZT.ART",
-  "start_url": "./index.html",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "name": "ZT.ART — калькулятор печати",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
-  ]
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#0b0b0b",
+  "background_color": "#0b0b0b",
+  "description": "Калькулятор цен и расхода материалов для сублимации — ZT.ART",
+  "author": "Жулдыз Тююкпаев"
 }
