@@ -1,163 +1,90 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ZT.ART — Калькулятор</title>
-
-<!-- PWA -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="manifest" href="manifest.json" />
-<meta name="theme-color" content="#000000" />
-
+<title>ZT.ART — калькулятор печати</title>
 <style>
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: Arial, sans-serif;
-        background: #0c0c0c;
-        color: #ffffff;
-        display: flex;
-        justify-content: center;
-        padding: 20px;
-    }
-    .wrap {
-        width: 100%;
-        max-width: 480px;
-        background: #111111;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 0 25px rgba(0,0,0,0.6);
-    }
-    h1 {
-        text-align: center;
-        font-size: 20px;
-        font-weight: 700;
-        margin-bottom: 20px;
-        color: #d4af37;
-    }
-    label {
-        font-size: 14px;
-        margin-top: 10px;
-        display: block;
-        color: #bbbbbb;
-    }
-    input, select {
-        width: 100%;
-        padding: 10px;
-        margin-top: 6px;
-        border-radius: 8px;
-        border: 1px solid #333;
-        background: #1a1a1a;
-        color: #fff;
-        font-size: 16px;
-        outline: none;
-    }
-    button {
-        width: 100%;
-        padding: 12px;
-        margin-top: 15px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    .btn {
-        background: #d4af37;
-        color: #000;
-    }
-    .btn-copy {
-        background: transparent;
-        border: 1px solid #d4af37;
-        color: #d4af37;
-    }
-    .result {
-        text-align: center;
-        font-size: 24px;
-        margin-top: 15px;
-        font-weight: bold;
-        color: #d4af37;
-    }
-    .author {
-        text-align: center;
-        margin-top: 18px;
-        font-size: 12px;
-        color: #666;
-    }
+  body{font-family:Inter, Roboto, Arial; background:#0b0b0b; color:#fff; margin:0; padding:0}
+  .wrap{max-width:920px;margin:18px auto;padding:18px;background:linear-gradient(180deg,#0f0f10,#0b0b0b);border-radius:8px}
+  h1{font-size:20px;margin:0 0 10px;color:#e6c976}
+  label{display:block;margin-top:10px;font-size:13px;color:#ddd}
+  input,select{width:100%;padding:8px;border-radius:6px;border:1px solid #222;background:#0b0b0b;color:#fff}
+  .row{display:flex; gap:10px}
+  .col{flex:1}
+  button{margin-top:12px;padding:10px 12px;background:#b99b4a;border:none;border-radius:6px;color:#0b0b0b;font-weight:600}
+  .out{margin-top:12px;padding:12px;background:#0b0b0b;border-radius:6px;border:1px solid #222}
+  footer{margin-top:18px;padding:10px;text-align:center;color:#bdbdbd;font-size:12px}
+  .small{font-size:13px;color:#cfcfcf}
 </style>
 </head>
-
 <body>
 <div class="wrap">
+  <h1>ZT.ART — Калькулятор цены на сублимацию</h1>
 
-    <h1>ZT.ART — Калькулятор</h1>
+  <div class="small">Вводите размеры в сантиметрах (см). Поддерживаются любые размеры — стандартные и нестандартные.</div>
 
-    <label>Ширина (см)</label>
-    <input type="number" id="w" placeholder="Например: 30" min="1">
+  <label>Ширина (см)</label>
+  <input id="w" type="number" min="0.1" step="0.1" value="30"/>
 
-    <label>Высота (см)</label>
-    <input type="number" id="h" placeholder="Например: 40" min="1">
+  <label>Высота (см)</label>
+  <input id="h" type="number" min="0.1" step="0.1" value="40"/>
 
-    <label>Материал</label>
-    <select id="material">
-        <option value="chromolux">Хромолюкс (глянец)</option>
-        <option value="matte">Матовый алюминий</option>
-    </select>
+  <div class="row">
+    <div class="col">
+      <label>Материал (металл хромолюкс)</label>
+      <select id="material">
+        <option value="chrome">Хромолюкс — Gloss White (0.45 мм)</option>
+        <option value="aluminum">Алюминий — матовый</option>
+      </select>
+    </div>
+    <div class="col">
+      <label>Панелей (модульных)</label>
+      <input id="panels" type="number" min="1" step="1" value="1"/>
+    </div>
+  </div>
 
-    <label>Количество панелей</label>
-    <select id="panels">
-        <option value="1">1 панель</option>
-        <option value="2">2 панели</option>
-        <option value="4">4 панели</option>
-    </select>
+  <label>Установить минимальную цену (тенге)</label>
+  <input id="minPrice" type="number" value="10000"/>
 
-    <button class="btn" onclick="calc()">Посчитать</button>
-    <button class="btn-copy" onclick="copyPrice()">Копировать цену</button>
+  <label>Коэффициент за нестандарт/сложную обработку (%)</label>
+  <input id="coef" type="number" min="0" step="1" value="20"/>
 
-    <div class="result" id="result">Цена: —</div>
+  <button id="calc">Рассчитать цену и расход</button>
 
-    <div class="author">Автор: Жулдыз Тююкпаев</div>
+  <div class="out">
+    <div class="small">Результат</div>
+    <div id="resultPrice" style="font-size:22px;font-weight:700;margin-top:6px">—</div>
+    <div id="details" class="small" style="margin-top:6px">—</div>
+  </div>
 
+  <div class="out">
+    <div class="small">Расход материалов (примерно)</div>
+    <div id="consumption" style="margin-top:6px">—</div>
+  </div>
+
+  <div style="margin-top:10px">
+    <button id="copy">Копировать цену</button>
+    <button id="share" style="margin-left:8px">Поделиться</button>
+  </div>
+
+  <footer>Автор: Жулдыз Тююкпаев — ZT.ART</footer>
 </div>
 
 <script>
-// расчет
-function calc() {
-    let w = Number(document.getElementById("w").value);
-    let h = Number(document.getElementById("h").value);
-    let panels = Number(document.getElementById("panels").value);
-    let material = document.getElementById("material").value;
+function calculate(){
+  const w = parseFloat(document.getElementById('w').value) || 0;
+  const h = parseFloat(document.getElementById('h').value) || 0;
+  const panels = Math.max(1, parseInt(document.getElementById('panels').value)||1);
+  const minPrice = parseFloat(document.getElementById('minPrice').value)||10000;
+  const coef = parseFloat(document.getElementById('coef').value)||20;
+  if(w<=0||h<=0) return {total:0, note:'Введите размер'};
 
-    if (!w || !h || w <= 0 || h <= 0) {
-        document.getElementById("result").innerText = "Ошибка в размере!";
-        return;
-    }
+  // площадь в м2
+  const area_m2 = (w/100)*(h/100) * panels;
 
-    // площадь в см²
-    let area = (w * h);
+  // базовая ставка: 70000 тг за 1 м2 (пример, вы можете менять)
+  const baseRatePerM2 = 70000; // тг/м2
 
-    // ставки
-    let rate = material === "chromolux" ? 0.8 : 0.6;
-    
-    let price = Math.round(area * rate * panels);
-
-    if (price < 8000) price = 8000; // минималка
-
-    document.getElementById("result").innerText = `Цена: ${price.toLocaleString()} ₸`;
-}
-
-// копирование
-function copyPrice() {
-    let text = document.getElementById("result").innerText;
-    navigator.clipboard.writeText(text);
-    alert("Скопировано: " + text);
-}
-
-// PWA service worker
-if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("sw.js");
-}
-</script>
-
-</body>
-</html>
+  // базовая цена по площади
